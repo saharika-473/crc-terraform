@@ -8,7 +8,7 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
     viewer_protocol_policy = "allow-all"
-    target_origin_id      = aws_s3_bucket_website_configuration.example.website_endpoint
+    target_origin_id      = aws_s3_bucket.MyWebsite.bucket
     forwarded_values {
       query_string = false
       cookies {
@@ -19,7 +19,7 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
 
   origin {
     domain_name = aws_s3_bucket_website_configuration.example.website_endpoint
-    origin_id   = aws_s3_bucket_website_configuration.example.website_endpoint
+    origin_id   = aws_s3_bucket.MyWebsite.bucket
 
     custom_origin_config {
       http_port              = 80
