@@ -40,23 +40,24 @@ resource "aws_s3_bucket_acl" "MyWebsite" {
 }
 
 
-# resource "aws_s3_bucket_policy" "BucketPolicy" {
-#   bucket = aws_s3_bucket.MyWebsite.id
+resource "aws_s3_bucket_policy" "MyBucketPolicy" {
+  bucket = aws_s3_bucket.MyWebsite.bucket
 
-#   policy = jsonencode({
-#     Version = "2012-10-17",
-#     Id      = "MyPolicy",
-#     Statement = [
-#       {
-#         Sid       = "PublicReadForGetBucketObjects",
-#         Effect    = "Allow",
-#         Principal = "*",
-#         Action    = "s3:GetObject",
-#         Resource  = aws_s3_bucket.MyWebsite.arn
-#       }
-#     ]
-#   })
-# }
+  policy = {
+    Version = "2012-10-17",
+    Id      = "MyPolicy",
+    Statement = [
+      {
+        Sid       = "PublicReadForGetBucketObjects",
+        Effect    = "Allow",
+        Principal = "*",
+        Action    = "s3:GetObject",
+        Resource  = "${aws_s3_bucket.MyWebsite.arn}/*",
+      },
+    ],
+  }
+}
+
 
 resource "aws_s3_bucket_website_configuration" "example" {
   bucket = aws_s3_bucket.MyWebsite.id
