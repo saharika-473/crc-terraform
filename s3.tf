@@ -40,10 +40,10 @@ resource "aws_s3_bucket_acl" "MyWebsite" {
 }
 
 
-resource "aws_s3_bucket_policy" "MyBucketPolicy" {
-  bucket = aws_s3_bucket.MyWebsite.bucket
+resource "aws_s3_bucket_policy" "BucketPolicy" {
+  bucket = aws_s3_bucket.MyWebsite.id
 
-  policy = {
+  policy = jsonencode({
     Version = "2012-10-17",
     Id      = "MyPolicy",
     Statement = [
@@ -52,10 +52,10 @@ resource "aws_s3_bucket_policy" "MyBucketPolicy" {
         Effect    = "Allow",
         Principal = "*",
         Action    = "s3:GetObject",
-        Resource  = "${aws_s3_bucket.MyWebsite.arn}/*",
-      },
-    ],
-  }
+        Resource  = aws_s3_bucket.MyWebsite.arn
+      }
+    ]
+  })
 }
 
 
