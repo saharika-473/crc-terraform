@@ -5,6 +5,14 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+  bucket         = "rahul-crc-use1-dev-terraform"
+  key            = "state/terraform.tfstate"
+  region         = "us-east-1"
+  encrypt        = true
+  dynamodb_table = "terraform-lock-table"  # Optional: Enable state locking with DynamoDB
+}
 }
 
 # Configure the AWS Provider

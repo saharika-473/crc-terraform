@@ -5,6 +5,13 @@ resource "aws_s3_bucket" "MyWebsite" {
 
   tags = var.tags
 }
+resource "aws_s3_bucket" "MyTerraformBucket" {
+  bucket = "${local.naming_convention}-terraform"
+
+  force_destroy = var.force_destroy
+
+  tags = var.tags
+}
 
 resource "aws_s3_bucket_ownership_controls" "MyWebsite" {
   bucket = aws_s3_bucket.MyWebsite.id
@@ -33,30 +40,31 @@ resource "aws_s3_bucket_acl" "MyWebsite" {
 }
 
 
-resource "aws_s3_bucket_policy" "BucketPolicy" {
-  bucket = aws_s3_bucket.MyWebsite.id
+# resource "aws_s3_bucket_policy" "BucketPolicy" {
+#   bucket = aws_s3_bucket.MyWebsite.id
 
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Id      = "MyPolicy",
-    Statement = [
-      {
-        Sid       = "PublicReadForGetBucketObjects",
-        Effect    = "Allow",
-        Principal = "*",
-        Action    = "s3:GetObject",
-        Resource  = aws_s3_bucket.MyWebsite.arn
-      }
-    ]
-  })
-}
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Id      = "MyPolicy",
+#     Statement = [
+#       {
+#         Sid       = "PublicReadForGetBucketObjects",
+#         Effect    = "Allow",
+#         Principal = "*",
+#         Action    = "s3:GetObject",
+#         Resource  = aws_s3_bucket.MyWebsite.arn
+#       }
+#     ]
+#   })
+# }
 
 
 # Enable static website
-resource "aws_s3_bucket_website_configuration" "example" {
-  bucket = aws_s3_bucket.MyWebsite.id
+# resource "aws_s3_bucket_website_configuration" "example" {
+#   bucket = aws_s3_bucket.MyWebsite.id
 
-  index_document {
-    suffix = "index.html"
-  }
-}
+#   index_document {
+#     suffix = "index.html"
+#   }
+# }
+
