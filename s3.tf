@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "frontend_bucket_Policy" {
 }
 
 
-resource "aws_s3_bucket_website_configuration" "StaticWebsite" {
+resource "aws_s3_bucket_website_configuration" "example" {
   bucket = aws_s3_bucket.MyWebsite.id
 
   index_document {
