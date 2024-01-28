@@ -10,10 +10,6 @@ resource "aws_dynamodb_table" "terraform_lock_table" {
   tags = var.tags
 }
 
-provider "aws" {
-  region = "us-east-1"  # Replace with your desired region
-}
-
 resource "aws_dynamodb_table" "visit_counter" {
   name         = "${local.naming_convention}-visit-counter-table"
   billing_mode = "PAY_PER_REQUEST"
