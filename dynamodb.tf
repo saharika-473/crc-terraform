@@ -9,3 +9,25 @@ resource "aws_dynamodb_table" "terraform_lock_table" {
   write_capacity = 20
   tags = var.tags
 }
+
+provider "aws" {
+  region = "us-east-1"  # Replace with your desired region
+}
+
+resource "aws_dynamodb_table" "visit_counter" {
+  name         = "${local.naming_convention}-visit-counter-table"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key       = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  attribute {
+    name = "visitor_count"
+    type = "S"
+  }
+
+  tags = var.tags
+}
