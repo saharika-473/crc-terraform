@@ -19,7 +19,7 @@ jobs:
         terraform_version: 0.14.0
 
     - name: Configure AWS SSO
-        run: aws configure sso --region us-east-1 --profile ServerlessAccess-920868724606
+      run: aws configure sso --region us-east-1 --profile ServerlessAccess-920868724606
 
     - name: Get temporary credentials
       run: aws sso login --profile ServerlessAccess-920868724606
