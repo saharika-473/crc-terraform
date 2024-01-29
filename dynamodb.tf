@@ -20,10 +20,6 @@ resource "aws_dynamodb_table" "visit_counter" {
     type = "S"
   }
 
-  attribute {
-    name = "visitor_count"
-    type = "S"
-  }
 
   tags = var.tags
 }
