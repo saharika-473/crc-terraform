@@ -9,7 +9,7 @@ data "aws_iam_policy_document" "assume_role" {
 
     actions = ["sts:AssumeRole"]
   }
-  
+
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
@@ -25,6 +25,12 @@ resource "aws_lambda_function" "CloudResumeChallenge" {
     handler       = "lambda_function.lambda_handler"
     memory_size   = 128
     timeout       = 3
+
+    environment {
+      variables = {
+        "environment_acronym" = var.environment_acronym 
+      }
+    }
 
     # Use archive_file to create a zip file from your local source code
     source_code_hash = data.archive_file.lambda_code.output_base64sha256
