@@ -16,11 +16,25 @@ resource "aws_api_gateway_method" "GETcountVisitor" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "example" {
+resource "aws_api_gateway_integration" "Integration" {
   rest_api_id             = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
   resource_id             = aws_api_gateway_resource.countVisitor.id
   http_method             = aws_api_gateway_method.GETcountVisitor.http_method
   type                    = "AWS_PROXY"
-  integration_http_method = "POST"  # Adjust based on your Lambda function's requirements
+  integration_http_method = "GET"  # Adjust based on your Lambda function's requirements
   uri                     = aws_lambda_function.CloudResumeChallenge.invoke_arn
+}
+
+resource "aws_lambda_permission" "LambdaInvoke" {
+  statement_id  = "AllowAPIGatewayInvoke"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.CloudResumeChallenge.function_name
+  principal     = "apigateway.amazonaws.com"
+}
+
+resource "aws_api_gateway_deployment" "stage" {
+  depends_on = [aws_api_gateway_integration.Integration]
+
+  rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  stage_name  = "${var.environment_acronym}" 
 }
