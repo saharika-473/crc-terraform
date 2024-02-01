@@ -15,3 +15,11 @@ resource "aws_api_gateway_method" "GETcountVisitor" {
   http_method   = "GET"
   authorization = "NONE"
 }
+
+resource "aws_api_gateway_integration" "example" {
+  rest_api_id             = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id             = aws_api_gateway_resource.countVisitor.id
+  http_method             = aws_api_gateway_method.GETcountVisitor.http_method
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.CloudResumeChallenge.invoke_arn
+}
