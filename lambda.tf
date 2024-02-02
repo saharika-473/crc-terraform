@@ -11,13 +11,13 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-data "aws_iam_policy_document" "ApiGatewayPolicy" {
-  statement {
-    effect = "Allow"
-    actions = ["lambda:InvokeFunction"]
-    resources = [ aws_lambda_function.CloudResumeChallenge.arn ]
-  }
-}
+# data "aws_iam_policy_document" "ApiGatewayPolicy" {
+#   statement {
+#     effect = "Allow"
+#     actions = ["lambda:InvokeFunction"]
+#     resources = [ aws_lambda_function.CloudResumeChallenge.arn ]
+#   }
+# }
 
 data "aws_iam_policy_document" "DynamoDBPolicy" {
     statement {
@@ -46,16 +46,16 @@ resource "aws_iam_role_policy_attachment" "DynamoDBPolicyAttach" {
   role       = aws_iam_role.iam_for_lambda.name
 }
 
-resource "aws_iam_policy" "ApiGatewayPolicy" {
-  name        = "${local.naming_convention}-APIGateway-Access-Policy"
-  description = "IAM policy for API Gateway"
-  policy      = data.aws_iam_policy_document.ApiGatewayPolicy.json
-}
+# resource "aws_iam_policy" "ApiGatewayPolicy" {
+#   name        = "${local.naming_convention}-APIGateway-Access-Policy"
+#   description = "IAM policy for API Gateway"
+#   policy      = data.aws_iam_policy_document.ApiGatewayPolicy.json
+# }
 
-resource "aws_iam_role_policy_attachment" "ApiGatewayPolicyAttach" {
-  policy_arn = aws_iam_policy.ApiGatewayPolicy.arn
-  role       = aws_iam_role.iam_for_lambda.name
-}
+# resource "aws_iam_role_policy_attachment" "ApiGatewayPolicyAttach" {
+#   policy_arn = aws_iam_policy.ApiGatewayPolicy.arn
+#   role       = aws_iam_role.iam_for_lambda.name
+# }
 
 
 resource "aws_lambda_function" "CloudResumeChallenge" {
