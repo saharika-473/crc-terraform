@@ -22,7 +22,7 @@ resource "aws_lambda_function" "CloudResumeChallenge" {
     function_name = "${local.naming_convention}-visit-counter"
     architectures = [ "x86_64" ]
     runtime       = "python3.9"
-    handler       = "lambda_function.lambda_handler"
+    handler       = "visit_counter.lambda_handler"
     memory_size   = 128
     timeout       = 3
 
