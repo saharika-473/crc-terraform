@@ -26,11 +26,11 @@ resource "aws_api_gateway_integration" "Integration" {
 }
 
 resource "aws_lambda_permission" "LambdaInvoke" {
-  statement_id  = "AllowAPIGatewayInvoke"
+  statement_id  = "AllowAPIGatewayInvok"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.CloudResumeChallenge.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_deployment.stage.execution_arn}/*/*"
+  source_arn = aws_api_gateway_deployment.stage.execution_arn}
 }
 
 resource "aws_api_gateway_deployment" "stage" {
