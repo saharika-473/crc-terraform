@@ -30,7 +30,7 @@ resource "aws_lambda_permission" "LambdaInvoke" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.CloudResumeChallenge.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = "${aws_api_gateway_deployment.stage.arn}/*/*"
+  source_arn = "${aws_api_gateway_deployment.stage.execution_arn}/*/*"
 }
 
 resource "aws_api_gateway_deployment" "stage" {
