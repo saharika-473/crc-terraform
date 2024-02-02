@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "ApiGatewayPolicy" {
   statement {
     effect = "Allow"
     actions = ["lambda:InvokeFunction"]
-    resources = [ aws_lambda_function.CloudResumeChallenge.arn ]
+    resources = [ "${aws_api_gateway_rest_api.CloudResumeChallengeAPI.arn}/*/*" ]
   }
 }
 
