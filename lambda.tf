@@ -82,6 +82,13 @@ resource "aws_lambda_function" "CloudResumeChallenge" {
 
 }
 
+resource "aws_lambda_permission" "api_gateway" {
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.CloudResumeChallenge.function_name
+  principal = "apigateway.amazonaws.com"
+  source_arn = "${aws_api_gateway_rest_api.CloudResumeChallengeAPI.arn}/*/*"
+}
+
 # Use archive_file to create a zip file from the local source code directory
 data "archive_file" "lambda_code" {
   type        = "zip"
