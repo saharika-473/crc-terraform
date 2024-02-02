@@ -21,7 +21,6 @@ resource "aws_api_gateway_integration" "Integration" {
   resource_id             = aws_api_gateway_resource.countVisitor.id
   http_method             = aws_api_gateway_method.GETcountVisitor.http_method
   type                    = "AWS_PROXY"
-  integration_http_method = "GET"  # Adjust based on your Lambda function's requirements
   uri                     = aws_lambda_function.CloudResumeChallenge.invoke_arn
 }
 
