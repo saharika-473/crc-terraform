@@ -16,10 +16,6 @@ data "aws_iam_policy_document" "ApiGatewayPolicy" {
     effect = "Allow"
     actions = ["lambda:InvokeFunction"]
     resources = [ aws_lambda_function.CloudResumeChallenge.arn ]
-    principals {
-      type = "Service"
-      identifiers = ["apigateway.amazonaws.com"]
-    }
   }
 }
 
