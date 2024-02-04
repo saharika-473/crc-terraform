@@ -42,18 +42,33 @@ resource "aws_api_gateway_deployment" "stage" {
   stage_name  = "${var.environment_acronym}" 
 }
 
-resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
-  domain_name = "rahulpatel.cloud"
-
-  domain_name_configuration {
-    certificate_arn = aws_acm_certificate.MyCertificate.arn
-    endpoint_type   = "REGIONAL"
-    security_policy = "TLS_1_2"
-  }
+resource "aws_api_gateway_method_response" "response_200" {
+  rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id = aws_api_gateway_resource.countVisitor.id
+  http_method = aws_api_gateway_method.GETcountVisitor.http_method
+  status_code = "200"
 }
 
-resource "aws_api_gateway_base_path_mapping" "APIGatewayCustomDomainMapping" {
-  api_id      = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
-  stage_name  = aws_api_gateway_deployment.stage.stage_name
-  domain_name = aws_apigatewayv2_domain_name.APIGatewayCustomDomain.domain_name
+resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
+  rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id = aws_api_gateway_resource.countVisitor.id
+  http_method = aws_api_gateway_method.GETcountVisitor.http_method
+  status_code = aws_api_gateway_method_response.response_200.status_code
+
 }
+
+# resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
+#   domain_name = "rahulpatel.cloud"
+
+#   domain_name_configuration {
+#     certificate_arn = aws_acm_certificate.MyCertificate.arn
+#     endpoint_type   = "REGIONAL"
+#     security_policy = "TLS_1_2"
+#   }
+# }
+
+# resource "aws_api_gateway_base_path_mapping" "APIGatewayCustomDomainMapping" {
+#   api_id      = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+#   stage_name  = aws_api_gateway_deployment.stage.stage_name
+#   domain_name = aws_apigatewayv2_domain_name.APIGatewayCustomDomain.domain_name
+# }
