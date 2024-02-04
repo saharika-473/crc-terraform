@@ -42,20 +42,47 @@ resource "aws_api_gateway_deployment" "stage" {
   stage_name  = "${var.environment_acronym}" 
 }
 
-resource "aws_api_gateway_method_response" "response_200" {
+resource "aws_api_gateway_method" "options" {
+  rest_api_id   = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id   = aws_api_gateway_resource.countVisitor.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "options" {
+  rest_api_id             = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id             = aws_api_gateway_resource.countVisitor.id
+  http_method             = aws_api_gateway_method.options.http_method
+  type                    = "MOCK"
+  integration_http_method = "OPTIONS"
+}
+
+resource "aws_api_gateway_method_response" "options" {
   rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
   resource_id = aws_api_gateway_resource.countVisitor.id
-  http_method = aws_api_gateway_method.GETcountVisitor.http_method
+  http_method = aws_api_gateway_method.options.http_method
   status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+  }
 }
 
-resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
-  rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
-  resource_id = aws_api_gateway_resource.countVisitor.id
-  http_method = aws_api_gateway_method.GETcountVisitor.http_method
-  status_code = aws_api_gateway_method_response.response_200.status_code
+resource "aws_api_gateway_integration_response" "options" {
+  rest_api_id             = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  resource_id             = aws_api_gateway_resource.countVisitor.id
+  http_method             = aws_api_gateway_method.options.http_method
+  status_code             = aws_api_gateway_method_response.options.status_code
 
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Origin" = true
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+  }
 }
+
 
 # resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
 #   domain_name = "rahulpatel.cloud"
