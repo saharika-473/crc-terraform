@@ -32,12 +32,20 @@ resource "aws_lambda_permission" "LambdaInvoke" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.CloudResumeChallenge.function_name
   principal     = "apigateway.amazonaws.com"
-  source_arn = aws_api_gateway_deployment.stage.execution_arn
+  source_arn = aws_api_gateway_deployment.deployment.execution_arn
 }
 
-resource "aws_api_gateway_deployment" "stage" {
-  depends_on = [aws_api_gateway_integration.Integration]
+resource "aws_api_gateway_deployment" "deployment" {
+  rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  description = "API deployment triggered by Terraform"
 
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_api_gateway_stage" "stage" {
+  deployment_id = aws_api_gateway_deployment.deployment.id
   rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
   stage_name  = "${var.environment_acronym}" 
 }
