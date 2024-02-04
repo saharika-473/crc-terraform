@@ -75,12 +75,6 @@ resource "aws_api_gateway_integration_response" "options" {
   resource_id             = aws_api_gateway_resource.countVisitor.id
   http_method             = aws_api_gateway_method.options.http_method
   status_code             = aws_api_gateway_method_response.options.status_code
-
-  response_parameters = {
-    "method.response.header.Access-Control-Allow-Origin" = true
-    "method.response.header.Access-Control-Allow-Headers" = true
-    "method.response.header.Access-Control-Allow-Methods" = true
-  }
 }
 
 
