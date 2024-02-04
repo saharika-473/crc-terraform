@@ -1,6 +1,8 @@
 resource "aws_api_gateway_rest_api" "CloudResumeChallengeAPI" {
   name        = "${local.naming_convention}-API"
   description = "API for Cloud Resume Challenge"
+
+  tags = var.tags
 }
 
 resource "aws_api_gateway_resource" "countVisitor" {
@@ -48,4 +50,10 @@ resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
     endpoint_type   = "REGIONAL"
     security_policy = "TLS_1_2"
   }
+}
+
+resource "aws_api_gateway_base_path_mapping" "APIGatewayCustomDomainMapping" {
+  api_id      = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+  stage_name  = aws_api_gateway_deployment.stage.stage_name
+  domain_name = aws_apigatewayv2_domain_name.APIGatewayCustomDomain.domain_name
 }
