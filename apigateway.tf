@@ -39,3 +39,13 @@ resource "aws_api_gateway_deployment" "stage" {
   rest_api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
   stage_name  = "${var.environment_acronym}" 
 }
+
+resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
+  domain_name = "rahulpatel.cloud"
+
+  domain_name_configuration {
+    certificate_arn = aws_acm_certificate.MyCertificate.arn
+    endpoint_type   = "REGIONAL"
+    security_policy = "TLS_1_2"
+  }
+}
