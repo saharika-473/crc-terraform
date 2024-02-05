@@ -1,16 +1,3 @@
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
 # data "aws_iam_policy_document" "ApiGatewayPolicy" {
 #   statement {
 #     effect = "Allow"
@@ -78,8 +65,16 @@ resource "aws_lambda_function" "CloudResumeChallenge" {
 
     role = aws_iam_role.iam_for_lambda.arn
 
+    depends_on = [ aws_cloudwatch_log_group.LambdaLogs ]
+
     tags = var.tags
 
+}
+
+resource "aws_cloudwatch_log_group" "LambdaLogs" {
+  name = "/aws/lambda/${local.naming_convention}-visit-counter"
+
+  tags = var.tags
 }
 # resource "aws_lambda_permission" "api_gateway" {
 #   action = "lambda:InvokeFunction"
