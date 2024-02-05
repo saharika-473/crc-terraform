@@ -78,10 +78,17 @@ resource "aws_lambda_function" "CloudResumeChallenge" {
 
     role = aws_iam_role.iam_for_lambda.arn
 
+    depends_on = [ aws_cloudwatch_log_group.LambdaLogs ]
+
     tags = var.tags
 
 }
 
+resource "aws_cloudwatch_log_group" "LambdaLogs" {
+  name = "/aws/lambda/${local.naming_convention}-visit-counter"
+
+  tags = var.tags
+}
 # resource "aws_lambda_permission" "api_gateway" {
 #   action = "lambda:InvokeFunction"
 #   function_name = aws_lambda_function.CloudResumeChallenge.function_name
