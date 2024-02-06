@@ -6,16 +6,7 @@
 #   }
 # }
 
-data "aws_iam_policy_document" "DynamoDBPolicy" {
-    statement {
-    effect = "Allow"
-    actions = [ "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem",
-      "dynamodb:DeleteItem", ]
-    resources = [ aws_dynamodb_table.visit_counter.arn ]
-  }
-}
+
 
 resource "aws_iam_role" "iam_for_lambda" {
   name               = "${local.naming_convention}-role"
@@ -32,17 +23,16 @@ resource "aws_iam_role_policy_attachment" "DynamoDBPolicyAttach" {
   policy_arn = aws_iam_policy.DynamoDBPolicy.arn
   role       = aws_iam_role.iam_for_lambda.name
 }
+resource "aws_iam_policy" "CloudWatchPolicy" {
+  name        = "${local.naming_convention}-CloudWatch-Logs-Policy"
+  description = "IAM policy for CloudWatch Logs"
+  policy      = data.aws_iam_policy_document.CloudWatchLogsPolicy.json
+}
 
-# resource "aws_iam_policy" "ApiGatewayPolicy" {
-#   name        = "${local.naming_convention}-APIGateway-Access-Policy"
-#   description = "IAM policy for API Gateway"
-#   policy      = data.aws_iam_policy_document.ApiGatewayPolicy.json
-# }
-
-# resource "aws_iam_role_policy_attachment" "ApiGatewayPolicyAttach" {
-#   policy_arn = aws_iam_policy.ApiGatewayPolicy.arn
-#   role       = aws_iam_role.iam_for_lambda.name
-# }
+resource "aws_iam_role_policy_attachment" "CloudWatchLogsPolicyAttach" {
+  policy_arn = aws_iam_policy.CloudWatchPolicy.arn
+  role       = aws_iam_role.iam_for_lambda.name
+}
 
 
 resource "aws_lambda_function" "CloudResumeChallenge" {
