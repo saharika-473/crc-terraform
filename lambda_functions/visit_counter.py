@@ -18,6 +18,7 @@ initialize_count()
 
 def lambda_handler(event, context):
     print(event,context)
+    print(event['requestContext']['http']['sourceIp'])
     response = table.get_item(Key={'id': 'count'})
     
     if 'Item' not in response:
