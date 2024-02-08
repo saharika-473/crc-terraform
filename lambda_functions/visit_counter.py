@@ -7,17 +7,17 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(f'rahul-crc-use1-{env}-visit-counter-table')
 
 def initialize_count():
-    try:
-        # Try to get the 'count' item
-        table.get_item(Key={'id': 'count'})
-    except dynamodb.meta.client.exceptions.ResourceNotFoundException:
+    response = table.get_item(Key={'id': 'count'})
+    if 'Item' not in response:
         # 'count' item doesn't exist, initialize it with the initial count value
         table.put_item(Item={'id': 'count', 'visitor_count': '1'})
+
 
 # Initialize the 'count' item if it doesn't exist
 initialize_count()
 
 def lambda_handler(event, context):
+    print(event,context)
     response = table.get_item(Key={'id': 'count'})
     
     if 'Item' not in response:
