@@ -25,13 +25,17 @@ jobs:
         terraform_version: 0.14.0
 
     - name: Determine plan file name
-          id: plan_filename
-          run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-{environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${GITHUB_REF_SLUG}" >> $GITHUB_ENV
+      id: plan_filename
+      run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-{environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${GITHUB_REF_SLUG}" >> $GITHUB_ENV
 
     - name: Terraform Init and Plan
       run: |
         terraform init
         terraform plan -out=$PLAN_FILE -var-file=variables_dev.tfvars
+  
+    - name: Upload Terraform plan to S3
+      run: |
+        aws s3 cp $PLAN_FILE s3://rahul-crc-use1-dev-terraform/plan/
 
     - name: Terraform Apply
       run: |
