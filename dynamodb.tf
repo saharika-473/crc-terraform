@@ -25,7 +25,7 @@ resource "aws_dynamodb_table" "visit_counter" {
 }
 
 resource "aws_dynamodb_table" "unique_visitor" {
-  name         = "${local.naming_convention}-unique-visitor-table"
+  name         = "${local.naming_convention}-unique-ipaddress-table"
   billing_mode = "PAY_PER_REQUEST"
   hash_key       = "ip_address"
 
