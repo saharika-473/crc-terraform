@@ -26,7 +26,7 @@ jobs:
 
     - name: Determine plan file name
       id: plan_filename
-      run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-{environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${GITHUB_REF_SLUG}" >> $GITHUB_ENV
+      run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-${environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${GITHUB_REF_SLUG}" >> $GITHUB_ENV
 
     - name: Terraform Init and Plan
       run: |
