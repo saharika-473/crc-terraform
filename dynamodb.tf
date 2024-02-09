@@ -23,3 +23,17 @@ resource "aws_dynamodb_table" "visit_counter" {
 
   tags = var.tags
 }
+
+resource "aws_dynamodb_table" "unique_visitor" {
+  name         = "${local.naming_convention}-unique-visitor-table"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key       = "ip_address"
+
+  attribute {
+    name = "ip_address"
+    type = "S"
+  }
+
+
+  tags = var.tags
+}

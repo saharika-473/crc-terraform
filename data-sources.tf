@@ -31,6 +31,9 @@ data "aws_iam_policy_document" "DynamoDBPolicy" {
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
       "dynamodb:DeleteItem", ]
-    resources = [ aws_dynamodb_table.visit_counter.arn ]
+    resources = [ 
+        aws_dynamodb_table.visit_counter.arn,
+        aws_dynamodb_table.unique_visitor.arn
+        ]
   }
 }
