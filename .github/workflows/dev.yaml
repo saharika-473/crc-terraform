@@ -36,11 +36,14 @@ jobs:
     - name: Terraform Init and Plan
       run: |
         terraform init
-        terraform plan -out=$PLAN_FILE -var-file=variables_dev.tfvars
+        terraform plan -out=$PLAN_FILE.tfplan -var-file=variables_dev.tfvars
   
     - name: Upload Terraform plan to S3
       run: |
         aws s3 cp $PLAN_FILE s3://rahul-crc-use1-dev-terraform/plan/ --region ${region}
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
 
     - name: Terraform Apply
       run: |
