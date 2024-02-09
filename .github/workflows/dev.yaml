@@ -24,9 +24,13 @@ jobs:
       with:
         terraform_version: 0.14.0
 
+    - name: Determine branch name
+      id: branch_name
+      run: echo "BRANCH_NAME=$(basename $GITHUB_REF)" >> $GITHUB_ENV
+
     - name: Determine plan file name
       id: plan_filename
-      run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-${environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${GITHUB_REF_SLUG}" >> $GITHUB_ENV
+      run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-${environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${BRANCH_NAME}" >> $GITHUB_ENV
 
     - name: Terraform Init and Plan
       run: |
