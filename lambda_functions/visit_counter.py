@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     ip_address = event['requestContext']['identity']['sourceIp']
 
     # Check if the IP address already exists in the DynamoDB table
-    response = ip_table.get_item(Key={'IPAddress': ip_address})
+    response = ip_table.get_item(Key={'ip_address': ip_address})
 
     if 'Item' not in response:
         # IP address doesn't exist, it's a unique visitor
