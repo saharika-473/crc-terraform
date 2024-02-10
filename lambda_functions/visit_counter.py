@@ -26,7 +26,7 @@ def lambda_handler(event, context):
     if 'Item' not in response:
         # IP address doesn't exist, it's a unique visitor
         # Add the IP address to the table
-        ip_table.put_item(Item={'IPAddress': ip_address})
+        ip_table.put_item(Item={'ip_address': ip_address})
 
         # Increment the visitor count
         response = visit_counter.update_item(
