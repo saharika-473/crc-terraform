@@ -18,7 +18,7 @@ def initialize_count():
 initialize_count()
 
 def lambda_handler(event, context):
-    ip_address = event['requestContext']['http']['sourceIp']
+    ip_address = event['requestContext'][['identity']]['sourceIp']
 
     # Check if the IP address already exists in the DynamoDB table
     response = ip_table.get_item(Key={'IPAddress': ip_address})
