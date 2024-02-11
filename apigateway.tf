@@ -51,18 +51,35 @@ resource "aws_api_gateway_stage" "stage" {
 }
 
 
-# resource "aws_apigatewayv2_domain_name" "APIGatewayCustomDomain" {
-#   domain_name = "rahulpatel.cloud"
+resource "aws_api_gateway_usage_plan" "usage_plan" {
+  name        = "${local.naming_convention}-UsagePlan"  # Follow naming convention
+  description = "Usage plan for ${local.naming_convention} API"
 
-#   domain_name_configuration {
-#     certificate_arn = aws_acm_certificate.MyCertificate.arn
-#     endpoint_type   = "REGIONAL"
-#     security_policy = "TLS_1_2"
-#   }
-# }
+  api_stages {
+    api_id = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
+    stage  = aws_api_gateway_stage.stage.stage_name
+  }
 
-# resource "aws_api_gateway_base_path_mapping" "APIGatewayCustomDomainMapping" {
-#   api_id      = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
-#   stage_name  = aws_api_gateway_deployment.stage.stage_name
-#   domain_name = aws_apigatewayv2_domain_name.APIGatewayCustomDomain.domain_name
-# }
+  quota_settings {
+    limit      = 1000
+    offset     = 2
+    period     = "MONTH"
+  }
+
+  throttle_settings {
+    burst_limit = 200
+    rate_limit  = 100
+  }
+}
+
+resource "aws_api_gateway_api_key" "example_api_key" {
+  name    = "${local.naming_convention}-APIKey"  # Follow naming convention
+  enabled = true
+}
+
+
+resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
+  key_id        = aws_api_gateway_api_key.example_api_key.id
+  key_type      = "API_KEY"
+  usage_plan_id = aws_api_gateway_usage_plan.usage_plan.id
+}
