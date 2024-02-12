@@ -1,6 +1,11 @@
 import boto3
 import json
 import os
+import hashlib
+from datetime import datetime, timedelta, timezone
+
+# Set the timezone to Indian Standard Time (IST)
+IST = timezone(timedelta(hours=5, minutes=30))
 
 env = os.environ.get('environment_acronym')
 dynamodb = boto3.resource('dynamodb')
@@ -8,33 +13,68 @@ visit_counter = dynamodb.Table(f'rahul-crc-use1-{env}-visit-counter-table')
 ip_table = dynamodb.Table(f'rahul-crc-use1-{env}-unique-ipaddress-table')
 
 def initialize_count():
-    response = visit_counter.get_item(Key={'id': 'count'})
+    try:
+        response = visit_counter.get_item(Key={'id': 'count'})
+        if 'Item' not in response:
+            # 'count' item doesn't exist, initialize it with the initial count value
+            visit_counter.put_item(Item={'id': 'count', 'visitor_count': 1})
+    except Exception as e:
+        print("Error initializing count:", e)
+
+def hash_ip(ip_address):
+    # Hash the IP address to protect privacy
+    return hashlib.sha256(ip_address.encode()).hexdigest()
+
+def is_unique_visitor(ip_address, timeframe):
+    # Check if the hashed IP address already exists in the DynamoDB table
+    response = ip_table.get_item(Key={'ip_address': hash_ip(ip_address)})
+
     if 'Item' not in response:
-        # 'count' item doesn't exist, initialize it with the initial count value
-        visit_counter.put_item(Item={'id': 'count', 'visitor_count': '1'})
+        # IP address doesn't exist, it's a unique visitor
+        return True
+    else:
+        # Check if the last visit time is within the specified timeframe (1 hour)
+        last_visit_time = response['Item'].get('LastVisitTime')
+        if last_visit_time is None or datetime.now(IST) - datetime.fromisoformat(last_visit_time.replace('Z', '+00:00')) > timedelta(hours=timeframe):
+            # If the last visit time is outside the timeframe or doesn't exist, consider the visitor as unique
+            return True
+        else:
+            # If the last visit time is within the timeframe, consider the visitor as a repeat visitor
+            return False
+
+def update_visitor_count():
+    try:
+        # Increment the visitor count
+        response = visit_counter.update_item(
+            Key={'id': 'count'},
+            UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :val)',
+            ExpressionAttributeValues={':val': 1},
+            ReturnValues='UPDATED_NEW'
+        )
+    except Exception as e:
+        print("Error updating visitor count:", e)
 
 
-# Initialize the 'count' item if it doesn't exist
-initialize_count()
+def update_last_visit_time(ip_address):
+    try:
+        # Update the last visit time for the hashed IP address
+        ip_table.update_item(
+            Key={'ip_address': hash_ip(ip_address)},
+            UpdateExpression='SET LastVisitTime = :time',
+            ExpressionAttributeValues={':time': str(datetime.now(IST))},
+            ConditionExpression='attribute_not_exists(ip_address_hash)'  # Only update if IP address doesn't exist
+        )
+    except Exception as e:
+        print("Error updating last visit time:", e)
 
 def lambda_handler(event, context):
     ip_address = event['requestContext']['identity']['sourceIp']
 
-    # Check if the IP address already exists in the DynamoDB table
-    response = ip_table.get_item(Key={'ip_address': ip_address})
-
-    if 'Item' not in response:
-        # IP address doesn't exist, it's a unique visitor
-        # Add the IP address to the table
-        ip_table.put_item(Item={'ip_address': ip_address})
-
-        # Increment the visitor count
-        response = visit_counter.update_item(
-            Key={'id': 'count'},
-            UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :init) + :val',
-            ExpressionAttributeValues={':init': 1, ':val': 1},
-            ReturnValues='UPDATED_NEW'
-        )
+    # Check if the visitor is unique within the past hour
+    if is_unique_visitor(ip_address, timeframe=1):  # Set timeframe to 1 hour
+        # Visitor is unique, update visitor count and last visit time
+        update_visitor_count()
+        update_last_visit_time(ip_address)
 
         return {
             'statusCode': 200,
@@ -46,9 +86,10 @@ def lambda_handler(event, context):
             },
         }
     else:
+        # Visitor is a repeat visitor within the past hour
         return {
             'statusCode': 200,
-            'body': json.dumps({'message': 'Visitor already counted as unique.'}),
+            'body': json.dumps({'message': 'Visitor already counted as unique within the past hour.'}),
             'headers': {
                 'Access-Control-Allow-Headers': '*',
                 'Access-Control-Allow-Origin': '*',
