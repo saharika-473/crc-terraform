@@ -53,6 +53,8 @@ def update_visitor_count():
         # Increment the visitor count
         response = visit_counter.update_item(
             Key={'id': 'count'},
+            UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :init) + :val',
+            ExpressionAttributeValues={':init': 1, ':val': 1},
             UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :val)',
             ExpressionAttributeValues={':val': 1},
             ReturnValues='UPDATED_NEW'
