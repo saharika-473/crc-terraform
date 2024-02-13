@@ -26,21 +26,27 @@ def hash_ip(ip_address):
     return hashlib.sha256(ip_address.encode()).hexdigest()
 
 def is_unique_visitor(ip_address, timeframe):
-    # Check if the hashed IP address already exists in the DynamoDB table
-    response = ip_table.get_item(Key={'ip_address': hash_ip(ip_address)})
-
-    if 'Item' not in response:
-        # IP address doesn't exist, it's a unique visitor
-        return True
-    else:
-        # Check if the last visit time is within the specified timeframe (1 hour)
-        last_visit_time = response['Item'].get('LastVisitTime')
-        if last_visit_time is None or datetime.now(IST) - datetime.fromisoformat(last_visit_time.replace('Z', '+00:00')) > timedelta(hours=timeframe):
-            # If the last visit time is outside the timeframe or doesn't exist, consider the visitor as unique
+    try:
+        # Get the item from the IP table
+        response = ip_table.get_item(Key={'ip_address': hash_ip(ip_address)})
+        if 'Item' not in response:
+            # IP address doesn't exist, it's a unique visitor
             return True
         else:
-            # If the last visit time is within the timeframe, consider the visitor as a repeat visitor
-            return False
+            # Check if the last visit time is within the specified timeframe
+            last_visit_time = response['Item'].get('LastVisitTime')
+            if last_visit_time:
+                last_visit_time = datetime.fromisoformat(last_visit_time.replace('Z', '+00:00'))
+                # Check if the last visit time is older than the current time minus the timeframe
+                if datetime.now(IST) - last_visit_time > timedelta(hours=timeframe):
+                    return True
+            else:
+                # If last visit time doesn't exist, it's a unique visitor
+                return True
+    except Exception as e:
+        print("Error checking uniqueness:", e)
+    return False
+
 
 def update_visitor_count():
     try:
