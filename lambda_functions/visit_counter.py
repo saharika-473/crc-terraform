@@ -55,8 +55,6 @@ def update_visitor_count():
             Key={'id': 'count'},
             UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :init) + :val',
             ExpressionAttributeValues={':init': 1, ':val': 1},
-            UpdateExpression='SET visitor_count = if_not_exists(visitor_count, :val)',
-            ExpressionAttributeValues={':val': 1},
             ReturnValues='UPDATED_NEW'
         )
     except Exception as e:
