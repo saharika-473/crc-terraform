@@ -16,7 +16,7 @@ resource "aws_api_gateway_method" "GETcountVisitor" {
   resource_id   = aws_api_gateway_resource.countVisitor.id
   http_method   = "GET"
   authorization = "None"
-  api_key_required = true
+  api_key_required = false
 }
 
 resource "aws_api_gateway_integration" "Integration" {
@@ -51,6 +51,7 @@ resource "aws_api_gateway_stage" "stage" {
   stage_name  = "${var.environment_acronym}" 
 }
 
+# Usage plan configuration
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {
   name        = "${local.naming_convention}-UsagePlan"  # Follow naming convention

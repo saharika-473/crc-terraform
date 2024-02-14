@@ -28,3 +28,5 @@ outputs/
 
 # Platform specific ignores
 **/.terraform.*
+
+prod.yaml
