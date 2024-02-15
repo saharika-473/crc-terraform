@@ -1,18 +1,18 @@
-name: Terraform Deploy (Dev)
+name: Terraform Deploy (Production)
 
 on:
   push:
     branches:
-      - dev
+      - main
 
 jobs:
-  deploy_dev:
+  deploy_prod:
     runs-on: ubuntu-latest
 
     env:
       app_acronym: "crc"
       region_acronym: "use1"
-      environment_acronym: "dev"
+      environment_acronym: "prod"
 
 
     steps:
@@ -35,21 +35,21 @@ jobs:
     - name: Terraform Init and Plan
       run: |
         terraform init
-        terraform plan -out=$PLAN_FILE.tfplan -var-file=variables_dev.tfvars
+        terraform plan -out=$PLAN_FILE.tfplan -var-file=variables_prod.tfvars
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
   
     - name: Upload Terraform plan to S3
       run: |
-        aws s3 cp $PLAN_FILE.tfplan s3://rahul-crc-use1-dev-terraform/plan/ --region us-east-1
+        aws s3 cp $PLAN_FILE.tfplan s3://rahul-crc-use1-prod-terraform/plan/ --region us-east-1
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
 
     - name: Terraform Apply
       run: |
-        terraform apply -auto-approve -var-file=variables_dev.tfvars
+        terraform apply -auto-approve -var-file=variables_prod.tfvars
       env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_DEV }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_DEV }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}

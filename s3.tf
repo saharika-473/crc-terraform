@@ -5,13 +5,6 @@ resource "aws_s3_bucket" "MyWebsite" {
 
   tags = var.tags
 }
-resource "aws_s3_bucket" "MyTerraformBucket" {
-  bucket = "${local.naming_convention}-terraform"
-
-  force_destroy = var.force_destroy
-
-  tags = var.tags
-}
 
 resource "aws_s3_bucket_ownership_controls" "MyWebsite" {
   bucket = aws_s3_bucket.MyWebsite.id
