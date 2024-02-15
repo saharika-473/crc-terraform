@@ -34,7 +34,10 @@ jobs:
 
     - name: Terraform Init and Plan
       run: |
-        terraform init
+        terraform init -backend-config="bucket=rahul-crc-use1-prod-terraform" \
+                         -backend-config="key=state/terraform.tfstate" \
+                         -backend-config="region=us-east-1" \
+                         -backend-config="dynamodb_table=terraform-prod-lock-table"
         terraform plan -out=$PLAN_FILE.tfplan -var-file=variables_prod.tfvars
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
