@@ -46,5 +46,4 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
       restriction_type = "none"
     }
   }
-  depends_on = [ aws_acm_certificate.MyCertificate ]
 }
