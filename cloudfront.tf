@@ -36,7 +36,7 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
 
   aliases = [
     "www.rahulpatel.cloud",
-    "aws.rahulpatel.cloud",
+    "dev.rahulpatel.cloud",
   ]
 
   default_root_object = "index.html"
