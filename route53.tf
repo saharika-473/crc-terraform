@@ -4,6 +4,19 @@ resource "aws_route53_zone" "primary" {
   tags = var.tags
 }
 
+resource "aws_route53_record" "AWSRoute53Record" {
+  zone_id = aws_route53_zone.primary.zone_id
+
+  name    = "aws.rahulpatel.cloud"
+  type    = "A"
+
+  alias {
+    name    = aws_route53_record.MyRoute53Record.name
+    zone_id = "Z05257462V5HZM915307D"
+    evaluate_target_health = false
+  }
+}
+
 resource "aws_route53_record" "MyRoute53Record" {
   zone_id = aws_route53_zone.primary.zone_id
 
@@ -17,18 +30,6 @@ resource "aws_route53_record" "MyRoute53Record" {
   }
 }
 
-resource "aws_route53_record" "AWSRoute53Record" {
-  zone_id = aws_route53_zone.primary.zone_id
-
-  name    = "aws.rahulpatel.cloud"
-  type    = "A"
-
-  alias {
-    name    = aws_route53_record.MyRoute53Record.name
-    zone_id = "Z05257462V5HZM915307D"
-    evaluate_target_health = false
-  }
-}
 
 resource "aws_route53_record" "CNAME1Route53Record" {
   for_each = {
