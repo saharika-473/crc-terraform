@@ -49,15 +49,6 @@ resource "aws_route53_record" "SOARoute53Record" {
   records = [ "ns-23.awsdns-02.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400" ]
 }
 
-data "aws_acm_certificate" "my_certificate" {
-  domain = "rahulpatel.cloud"
-}
-
-data "aws_route53_zone" "route53_zone" {
-  name         = "rahulpatel.cloud"
-  private_zone = false
-}
-
 resource "aws_route53_record" "CNAME1Route53Record" {
   for_each = {
     for dvo in aws_acm_certificate.MyCertificate.domain_validation_options : dvo.domain_name => {
@@ -71,7 +62,7 @@ resource "aws_route53_record" "CNAME1Route53Record" {
   records = [each.value.record]
   ttl = 300
   type = each.value.type
-  zone_id = data.aws_route53_zone.route53_zone.zone_id
+  zone_id = aws_route53_zone.primary.zone_id
   }
 
 
