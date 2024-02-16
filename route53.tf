@@ -29,25 +29,6 @@ resource "aws_route53_record" "AWSRoute53Record" {
     evaluate_target_health = false
   }
 }
-resource "aws_route53_record" "NSRoute53Record" {
-  zone_id = aws_route53_zone.primary.zone_id
-
-  name    = "rahulpatel.cloud"
-  type    = "NS"
-  ttl     = 172800
-
-  records = [ "ns-23.awsdns-02.com.", "ns-1273.awsdns-31.org.", "ns-971.awsdns-57.net.", "ns-1712.awsdns-22.co.uk." ]
-}
-
-resource "aws_route53_record" "SOARoute53Record" {
-  zone_id = aws_route53_zone.primary.zone_id
-
-  name    = "rahulpatel.cloud"
-  type    = "SOA"
-  ttl     = 900
-
-  records = [ "ns-23.awsdns-02.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400" ]
-}
 
 resource "aws_route53_record" "CNAME1Route53Record" {
   for_each = {
