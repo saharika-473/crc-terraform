@@ -32,6 +32,12 @@ jobs:
       id: plan_filename
       run: echo "PLAN_FILE=terraform-${app_acronym}-${region_acronym}-${environment_acronym}-${GITHUB_SHA::8}-${GITHUB_RUN_NUMBER}-${BRANCH_NAME}" >> $GITHUB_ENV
 
+    - name: Terraform State unlock
+      run: |
+        terraform force-unlock d0c53345-3f90-d6a0-f5bc-fc8b12cfe389
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_PROD }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_PROD }}
     - name: Terraform Init and Plan
       run: |
         terraform init -backend-config="bucket=rahul-crc-use1-prod-terraform" \
