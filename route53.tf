@@ -12,7 +12,7 @@ resource "aws_route53_record" "AWSRoute53Record" {
 
   alias {
     name    = aws_route53_record.MyRoute53Record.name
-    zone_id = "Z05257462V5HZM915307D"
+    zone_id = aws_route53_zone.primary.zone_id
     evaluate_target_health = false
   }
 }
