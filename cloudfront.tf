@@ -1,3 +1,8 @@
+data "aws_acm_certificate" "my_certificate" {
+  domain   = "${var.environment_acronym}.rahulpatel.cloud"  # Replace with your domain name
+  statuses = ["ISSUED", "PENDING_VALIDATION"]      # Filter to only include issued certificates
+}
+
 resource "aws_cloudfront_distribution" "MyDistribution" {
   enabled             = true
   http_version        = "http1.1"
@@ -30,11 +35,11 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
   }
 
   viewer_certificate {
-    ssl_support_method  = "sni-only"
+    acm_certificate_arn = data.aws_acm_certificate.my_certificate.arn
+    ssl_support_method   = "sni-only"
   }
 
   aliases = [
-    "www.rahulpatel.cloud",
     "${var.environment_acronym}.rahulpatel.cloud",
   ]
 
