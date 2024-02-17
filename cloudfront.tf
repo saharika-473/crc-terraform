@@ -30,13 +30,12 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.MyCertificate.arn
     ssl_support_method  = "sni-only"
   }
 
   aliases = [
     "www.rahulpatel.cloud",
-    "aws.rahulpatel.cloud",
+    "${var.environment_acronym}.rahulpatel.cloud",
   ]
 
   default_root_object = "index.html"
@@ -46,5 +45,4 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
       restriction_type = "none"
     }
   }
-  depends_on = [ aws_acm_certificate.MyCertificate ]
 }
