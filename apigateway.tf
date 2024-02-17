@@ -85,3 +85,8 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
   key_type      = "API_KEY"
   usage_plan_id = aws_api_gateway_usage_plan.usage_plan.id
 }
+
+# Custom domain configuration
+resource "aws_api_gateway_domain_name" "example" {
+  domain_name     = "${var.environment_acronym}.rahulpatel.cloud"
+}
