@@ -87,6 +87,7 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
 }
 
 # Custom domain configuration
-resource "aws_api_gateway_domain_name" "example" {
+resource "aws_api_gateway_domain_name" "apigateway_custom_domain" {
+  certificate_arn = data.aws_acm_certificate.my_certificate.arn
   domain_name     = "${var.environment_acronym}.rahulpatel.cloud"
 }
