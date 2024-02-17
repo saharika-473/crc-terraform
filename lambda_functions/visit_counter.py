@@ -38,7 +38,7 @@ def is_unique_visitor(ip_address, timeframe):
             if last_visit_time:
                 last_visit_time = datetime.fromisoformat(last_visit_time.replace('Z', '+00:00'))
                 # Check if the last visit time is older than the current time minus the timeframe
-                if datetime.now(IST) - last_visit_time > timedelta(hours=timeframe):
+                if datetime.now(IST) - last_visit_time > timedelta(days=timeframe):
                     return True
             else:
                 # If last visit time doesn't exist, it's a unique visitor
@@ -77,7 +77,7 @@ def lambda_handler(event, context):
     ip_address = event['requestContext']['identity']['sourceIp']
 
     # Check if the visitor is unique within the past hour
-    if is_unique_visitor(ip_address, timeframe=1):  # Set timeframe to 1 hour
+    if is_unique_visitor(ip_address, timeframe=7):  # Set timeframe to 1 hour
         # Visitor is unique, update visitor count and last visit time
         update_visitor_count()
         update_last_visit_time(ip_address)
