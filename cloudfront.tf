@@ -34,9 +34,7 @@ resource "aws_cloudfront_distribution" "MyDistribution" {
     ssl_support_method   = "sni-only"
   }
 
-  aliases = [
-    "${var.environment_acronym}.rahulpatel.cloud",
-  ]
+  aliases = var.environment_acronym == "dev" ? ["${var.environment_acronym}.rahulpatel.cloud"] : ["${var.environment_acronym}.rahulpatel.cloud","aws.rahulpatel.cloud", "www.rahulpatel.cloud"]
 
   default_root_object = "index.html"
 
