@@ -85,10 +85,3 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
   key_type      = "API_KEY"
   usage_plan_id = aws_api_gateway_usage_plan.usage_plan.id
 }
-
-# Custom domain configuration
-resource "aws_api_gateway_base_path_mapping" "custom_domain_mapping" {
-  api_id      = aws_api_gateway_rest_api.CloudResumeChallengeAPI.id
-  domain_name = "${var.environment_acronym}.rahulpatel.cloud"
-  stage_name  = aws_api_gateway_stage.stage.stage_name
-}

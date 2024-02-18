@@ -81,24 +81,28 @@ def lambda_handler(event, context):
         # Visitor is unique, update visitor count and last visit time
         update_visitor_count()
         update_last_visit_time(ip_address)
-
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'Unique Visitor Count Updated'}),
-            'headers': {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*'
-            },
-        }
-    else:
-        # Visitor is a repeat visitor within the past hour
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'Visitor already counted as unique within the past hour.'}),
-            'headers': {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*'
-            },
-        }
+    # Fetch the latest visitor count from DynamoDB
+    try:
+        response = visit_counter.get_item(Key={'id': 'count'})
+        if 'Item' in response:
+            visitor_count = response['Item'].get('visitor_count', 0)
+            print(type(visitor_count))
+        else:
+            visitor_count = 0
+    except Exception as e:
+        print("Error fetching visitor count:", e)
+        visitor_count = 0
+    # Construct the response
+    response_body = {
+        'message': 'Unique Visitor Count Updated',
+        'visitor_count': int(visitor_count)
+    }
+    return {
+        'statusCode': 200,
+        'body': json.dumps(response_body),
+        'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
+    }
