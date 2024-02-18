@@ -1,3 +1,8 @@
+data "aws_acm_certificate" "my_certificate" {
+  domain   = "${var.environment_acronym}.rahulpatel.cloud"  # Replace with your domain name
+  statuses = ["ISSUED", "PENDING_VALIDATION"]      # Filter to only include issued certificates
+}
+
 data "aws_iam_policy_document" "assume_role" {
   statement {
     effect = "Allow"

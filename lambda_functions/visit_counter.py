@@ -38,7 +38,7 @@ def is_unique_visitor(ip_address, timeframe):
             if last_visit_time:
                 last_visit_time = datetime.fromisoformat(last_visit_time.replace('Z', '+00:00'))
                 # Check if the last visit time is older than the current time minus the timeframe
-                if datetime.now(IST) - last_visit_time > timedelta(hours=timeframe):
+                if datetime.now(IST) - last_visit_time > timedelta(days=timeframe):
                     return True
             else:
                 # If last visit time doesn't exist, it's a unique visitor
@@ -77,28 +77,32 @@ def lambda_handler(event, context):
     ip_address = event['requestContext']['identity']['sourceIp']
 
     # Check if the visitor is unique within the past hour
-    if is_unique_visitor(ip_address, timeframe=1):  # Set timeframe to 1 hour
+    if is_unique_visitor(ip_address, timeframe=7):  # Set timeframe to 1 hour
         # Visitor is unique, update visitor count and last visit time
         update_visitor_count()
         update_last_visit_time(ip_address)
-
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'Unique Visitor Count Updated'}),
-            'headers': {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*'
-            },
-        }
-    else:
-        # Visitor is a repeat visitor within the past hour
-        return {
-            'statusCode': 200,
-            'body': json.dumps({'message': 'Visitor already counted as unique within the past hour.'}),
-            'headers': {
-                'Access-Control-Allow-Headers': '*',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*'
-            },
-        }
+    # Fetch the latest visitor count from DynamoDB
+    try:
+        response = visit_counter.get_item(Key={'id': 'count'})
+        if 'Item' in response:
+            visitor_count = response['Item'].get('visitor_count', 0)
+            print(type(visitor_count))
+        else:
+            visitor_count = 0
+    except Exception as e:
+        print("Error fetching visitor count:", e)
+        visitor_count = 0
+    # Construct the response
+    response_body = {
+        'message': 'Unique Visitor Count Updated',
+        'visitor_count': int(visitor_count)
+    }
+    return {
+        'statusCode': 200,
+        'body': json.dumps(response_body),
+        'headers': {
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*'
+        },
+    }
