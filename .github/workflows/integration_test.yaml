@@ -1,0 +1,27 @@
+name: Integration Test
+
+on:
+  push:
+    branches:
+      - dev  # Change this to match your main branch name
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.x
+
+    - name: Install dependencies
+      run: pip install requests  # Install requests library for making HTTP requests
+
+    - name: Run integration tests
+      run: |
+        cd lambda_functions/integrations  # Change directory to where your integration tests are located
+        python -m unittest test_integration_visit_counter.py  # Replace with your actual test file name
