@@ -20,5 +20,5 @@ jobs:
 
     - name: Run unit tests
       run: |
-        cd lambda_functions/unit  # Change directory to where your unit tests are located
+        cd lambda_functions/tests/unit  # Change directory to where your unit tests are located
         python -m unittest test_visit_counter.py  # Replace with your actual test file name
