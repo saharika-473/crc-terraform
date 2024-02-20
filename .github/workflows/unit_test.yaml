@@ -18,9 +18,6 @@ jobs:
       with:
         python-version: 3.x
 
-    - name: Install dependencies
-      run: pip install -r lambda_functions/unit/requirements.txt  # Adjust as needed
-
     - name: Run unit tests
       run: |
         cd lambda_functions/unit  # Change directory to where your unit tests are located
