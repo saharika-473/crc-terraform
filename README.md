@@ -1,4 +1,4 @@
-# Cloud Resume Challenge - AWS Infrastructure as Code (IaC) 
+# Cloud Resume Challenge - AWS 
 This repository contains the Terraform configuration for deploying the
 infrastructure behind a cloud-based resume website built using the AWS
 Cloud Resume Challenge.
