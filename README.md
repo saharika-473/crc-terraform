@@ -27,7 +27,8 @@ git clone repository URL
 
 3. Initialize Terraform:
 ```
-cd crc-terraform terraform init
+cd crc-terraform
+terraform init
 ```
 4. Plan the infrastructure deployment: 
 ```
