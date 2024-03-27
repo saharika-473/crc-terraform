@@ -21,7 +21,7 @@ Cloud Resume Challenge.
 
 1. Clone this repository:
 ```
-git clone repository URL
+git clone <repository URL>
 ```
 2. Replace the placeholder values in terraform.tfvars with your desired configurations (e.g., domain name, website bucket name).
 
