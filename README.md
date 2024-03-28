@@ -35,8 +35,9 @@ terraform init
 terraform plan
 ```
 5. Review the plan and apply the infrastructure if satisfied:
+```
 terraform apply 
-
+```
 ## Additional Notes:
 
 * This is a base configuration and can be extended to include additional AWS resources as needed for your cloud resume implementation.
