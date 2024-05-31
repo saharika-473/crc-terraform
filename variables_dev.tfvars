@@ -5,5 +5,5 @@ environment_acronym = "dev"
 tags = {
     Environment         = "Development"
     Application         = "Cloud Resume Challenge"
-    Application_Owner   = "Rahul Patel"
+    Application_Owner   = "Saharika Kandukuri"
 }
